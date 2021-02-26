@@ -1,4 +1,4 @@
-import mongoose, { ConnectionOptions} from 'mongoose';
+import { ConnectionOptions, connect, connection } from 'mongoose';
 
 const dbOptions: ConnectionOptions = {
   useNewUrlParser: true,
@@ -7,15 +7,16 @@ const dbOptions: ConnectionOptions = {
   useFindAndModify: false
 };
 
-mongoose.connect('mongodb://localhost/aidyfaDemo', dbOptions)
+const { MONGODB_URI } = process.env
 
-const connection = mongoose.connection;
+connect(MONGODB_URI || 'mongodb://localhost/aidyfa-demo', dbOptions)
 
 connection.once('open', (): void => {
   console.log('Mongodb Connection stablished')
 });
 
-connection.on('error', (err): void => {
-  console.log('Mongodb connection error:', err);
+connection.on('error', (error): void => {
+  console.log('Mongodb connection error');
+  new Error(error)
   process.exit();
 });
