@@ -10,7 +10,7 @@ import passport from "passport";
 //BASE DE DATOS
 import "./database/connection";
 import "reflect-metadata";
-//RESOLVERS
+//SCHEMA
 import schema from "./graphql";
 
 //config
@@ -29,12 +29,12 @@ serverApollo.installSubscriptionHandlers(httpServer);
 //listener
 httpServer.listen(app.get("port"), () => {
   console.log(
-    `🚀 Server ready at http://localhost:${app.get("port")}${
+    `🚀 Server ready at ${process.env.URLHTTPS || "http://localhost"}:${app.get("port")}${
       serverApollo.graphqlPath
     }`
   );
   console.log(
-    `🚀 Subscriptions ready at ws://localhost:${app.get("port")}${
+    `🚀 Subscriptions ready at ${process.env.URLWS || "ws://localhost"}:${app.get("port")}${
       serverApollo.subscriptionsPath
     }`
   );
