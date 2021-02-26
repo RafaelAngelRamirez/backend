@@ -5,8 +5,6 @@ import { verify } from "jsonwebtoken";
 //HERRAMIENTAS DE GRAPHQL Y GRAPHQL-TOOLS
 import { stitchSchemas } from "@graphql-tools/stitch";
 import { makeExecutableSchema } from "@graphql-tools/schema";
-//PLUGINS
-import plugin from "./../plugins";
 //MODELS
 import Usuario, { IUsuario } from "../database/models/usuario";
 //AUTENTICACION
@@ -85,7 +83,6 @@ const configApollo: ApolloServerExpressConfig = {
       }
       return { req, res };
     }
-  },
-  plugins: [plugin],
+  }
 };
 export default configApollo;
