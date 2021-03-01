@@ -1,9 +1,11 @@
 import { Schema, model, SchemaDefinition, Document, Model } from "mongoose";
-
+//INTERFACE
+import { IUsuario } from './usuario'
 export interface IComentarios extends Document {
+  _id: Schema.Types.ObjectId,
   texto: String;
-  usuario: { type: Schema.Types.ObjectId; ref: "usuarios" };
-  likes: [{ type: Schema.Types.ObjectId; ref: "usuarios" }];
+  usuario: IUsuario;
+  likes: IUsuario[];
 }
 
 const esquema_comentarios: SchemaDefinition = {

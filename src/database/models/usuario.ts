@@ -7,7 +7,7 @@ import {
   Model,
 } from "mongoose";
 import bcrypt from "bcrypt";
-import { IPublicaciones } from './publicaciones'
+import { IPublicaciones } from "./publicaciones";
 
 export interface IUsuario extends Document {
   nombre: String;
@@ -16,12 +16,13 @@ export interface IUsuario extends Document {
   email: String;
   password: String;
   password2?: String;
-  amigos: [IUsuario] | [Schema.Types.ObjectId];
+  amigos: IUsuario[] | [Schema.Types.ObjectId];
   avatar: String;
   portada: String;
-  publicaciones: [IPublicaciones] | [Schema.Types.ObjectId],
+  socket: string,
+  publicaciones: IPublicaciones[] | [Schema.Types.ObjectId];
   historial: {
-    busqueda: [IUsuario] | [Schema.Types.ObjectId]
+    busqueda: IUsuario[] | [Schema.Types.ObjectId];
   };
   solicitudes: [
     {
@@ -31,9 +32,9 @@ export interface IUsuario extends Document {
     }
   ];
   preferencias: {
-    private: Boolean,
-    showViewMessage: Boolean
-  },
+    private: Boolean;
+    showViewMessage: Boolean;
+  };
   passwordValidate: (password: string) => Promise<boolean>;
 }
 
@@ -59,13 +60,14 @@ const esquema_usuario: SchemaDefinition = {
     require: [true, "Ingrese su email"],
     unique: true,
   },
-  avatar: {type: String, default: ''},
-  portada: {type: String, default: ''},
+  avatar: { type: String, default: "" },
+  portada: { type: String, default: "" },
+  socket: { type: String, default: "" },
   publicaciones: [
     {
       type: Schema.Types.ObjectId,
       ref: "publicaciones",
-    }
+    },
   ],
   direcion: {
     ciudad: String,
@@ -90,21 +92,21 @@ const esquema_usuario: SchemaDefinition = {
       {
         type: Schema.Types.ObjectId,
         ref: "usuarios",
-      }
-    ]
+      },
+    ],
   },
   solicitudes_enviadas: [
     {
       usuario: { type: Schema.Types.ObjectId, ref: "usuarios" },
       createdAt: { type: Date, default: new Date() },
-      leido: { type: Boolean, default: false}
+      leido: { type: Boolean, default: false },
     },
   ],
   solicitudes_recibidas: [
     {
       usuario: { type: Schema.Types.ObjectId, ref: "usuarios" },
       createdAt: { type: Date, default: new Date() },
-      leido: { type: Boolean, default: false}
+      leido: { type: Boolean, default: false },
     },
   ],
   preferencias: {
@@ -136,20 +138,5 @@ Usuario.methods.passwordValidate = async function (
   const usuario: IUsuario | any = this;
   return await bcrypt.compare(password, usuario.password);
 };
-
-//metodos para ejecutar una vez hayan realizado ciertas acciones
-//lista de acciones:
-//~conexion: (actualizar los datos del usaurio para mostrarlo como conectado o desconectado)
-//~Enviar solicitud
-//~Aceptar solicitud
-//~
-////////////////////////////////////////////////////////////////
-
-Usuario.method({
-  connect: async (socketId) => {
-    if (this) console.log(this);
-    console.log(socketId);
-  },
-});
 
 export default model<IUsuario>("usuarios", Usuario);
