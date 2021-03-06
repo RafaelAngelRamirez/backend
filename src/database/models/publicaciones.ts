@@ -6,7 +6,8 @@ export interface IPublicaciones extends Document {
   texto: String;
   usuario: IUsuario,
   likes:  IUsuario[],
-  comments: IComentarios[] ,
+  comments: IComentarios[],
+  file: {url: String}[]
 }
 
 const esquema_publicaciones: SchemaDefinition = {
@@ -14,6 +15,7 @@ const esquema_publicaciones: SchemaDefinition = {
   usuario: { type: Schema.Types.ObjectId, ref: "usuarios" },
   likes: [ { type: Schema.Types.ObjectId, ref: "usuarios" } ],
   comments: [ { type: Schema.Types.ObjectId, ref: "comentarios" } ],
+  file: [ { url: String } ],
 };
 
 const Publicaciones: Schema<

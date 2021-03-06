@@ -6,6 +6,7 @@ import Publicaciones from "../../database/models/publicaciones";
 
 export const Delete_publication = async (req: Request, res: Response) => {
   const { user, body }: any = req;
+  console.log(body)
   try {
     const usr: IUsuario | null | any = await Usuario.findById(user._id);
     usr?.publicaciones.remove({ _id: body._id });

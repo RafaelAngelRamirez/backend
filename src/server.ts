@@ -1,10 +1,12 @@
 import express, { Application } from "express";
 import { Server, createServer } from 'http'
+import { join } from 'path'
 import morgan from 'morgan'
-import cors from "cors";
 //MIDDLEWARE
 import passport from "passport";
+import cors from "cors";
 import Auth from './middleware/passport'
+import CorsOptions from './middleware/cors'
 //BASE DE DATOS
 import "./database/connection";
 //SOCKET.IO
@@ -28,12 +30,13 @@ class ServerApp {
     this.server = createServer(this.app)
     this._Config();
     this._Routers();
+    this._Start()
   }
 
   private _Config() {
     this.app.set("port", process.env.PORT || 8080);
     this.app.use(morgan("dev"))
-    this.app.use(cors());
+    this.app.use(cors(CorsOptions));
     this.app.use(express.json());
     this.app.use(passport.initialize());
   }
@@ -41,13 +44,14 @@ class ServerApp {
   private _Routers() {
     //PUBLIC ROUTERS
     this.app.use("/api/v1/pu", Authentication);
+    this.app.use('/upload',express.static(join(__dirname + './../upload')));
     //PRIVATE ROUTERS
     this.app.use("/api/v1/pr", passport.authenticate(Auth, { session: false }), User);
     this.app.use("/api/v1/pr", passport.authenticate(Auth, { session: false }), Friends);
     this.app.use("/api/v1/pr", passport.authenticate(Auth, { session: false }), Publication);
   }
 
-  public _Start() {
+  private _Start() {
     this.server.listen(this.app.get("port"), () => {
       console.log("Servidor escuchando en el puerto", this.app.get("port"));
       connection(this.server)
@@ -55,4 +59,4 @@ class ServerApp {
   }
 }
 
-new ServerApp()._Start();
+new ServerApp()

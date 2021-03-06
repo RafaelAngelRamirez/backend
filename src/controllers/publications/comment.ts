@@ -6,16 +6,6 @@ import Publicaciones, {
 } from "../../database/models/publicaciones";
 import Usuario, { IUsuario } from "../../database/models/usuario";
 import Comentario, { IComentarios } from "../../database/models/comentarios";
-//SOCKET
-import { getSocket } from "../../socket";
-
-const EmitterNewLike = async (_id: String, usr: IUsuario) => {
-  const socket = getSocket();
-  const publicacion: IPublicaciones | any = await Publicaciones.findById(
-    _id
-  ).populate({ path: "usuario" });
-  socket.emit("NEW_LIKE", publicacion, usr);
-};
 
 export const Comentar = async (req: Request, res: Response) => {
   const { _id }: any = req.user
